@@ -64,6 +64,10 @@ import appStore from "./app_store.png";
 import playStore from "./app_play_store.png";
 
 import cross_icon from "./cross-icon.png";
+import profile from "./profile.png";
+import bag from "./bag.png";
+import logout from "./logout.png";
+import parcel from "./parcels.png";
 
 export const assets = {
   logo,
@@ -79,6 +83,10 @@ export const assets = {
   appStore,
   playStore,
   cross_icon,
+  profile,
+  bag,
+  logout,
+  parcel
 };
 
 export const menu_list = [

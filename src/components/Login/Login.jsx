@@ -1,15 +1,54 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import axios from "axios";
 
 // importing css
 import "./Login.css";
+// importing assets
 import { assets } from "../../assets/asset";
+import { StoreContext } from "./../../Context/StoreContext";
 
 const Login = ({ setShowLogin }) => {
+  // backend url
+  const { url, setToken } = useContext(StoreContext);
+
   // state variables
   const [currentState, setCurrentState] = useState("Sign Up");
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    // update state
+    setData((data) => ({ ...data, [name]: value }));
+  };
+
+  const loginHandler = async (event) => {
+    event.preventDefault();
+
+    let newUrl = url;
+    if (currentState === "Login") {
+      newUrl += "/api/user/login";
+    } else {
+      newUrl += "/api/user/register";
+    }
+
+    const response = await axios.post(newUrl, data);
+    if (response.data.success) {
+      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      setShowLogin(false);
+    } else {
+      alert(response.data.message);
+    }
+  };
+
   return (
     <div className="login">
-      <form className="login-container">
+      <form className="login-container" onSubmit={loginHandler}>
         <div className="login-title">
           <h2>{currentState}</h2>
           <img
@@ -22,13 +61,33 @@ const Login = ({ setShowLogin }) => {
           {currentState === "Login" ? (
             <></>
           ) : (
-            <input type="text" placeholder="Your name" required />
+            <input
+              name="name"
+              onChange={onChangeHandler}
+              value={data.name}
+              type="text"
+              placeholder="Your name"
+              required
+            />
           )}
 
-          <input type="email" placeholder="Your email" required />
-          <input type="password" placeholder="Password" />
+          <input
+            name="email"
+            onChange={onChangeHandler}
+            value={data.email}
+            type="email"
+            placeholder="Your email"
+            required
+          />
+          <input
+            name="password"
+            onChange={onChangeHandler}
+            value={data.password}
+            type="password"
+            placeholder="Password"
+          />
         </div>
-        <button>
+        <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
         </button>
         <div className="login-condition">
